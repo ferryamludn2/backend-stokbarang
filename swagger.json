@@ -1,0 +1,323 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Inventory Stock Management API",
+    "version": "1.0.0",
+    "description": "Professional API documentation for managing inventory stock, users, and transactions in a warehouse or retail context.",
+    "contact": {
+      "name": "Ferry Amaludin",
+      "email": "ferryamludn.work@gmail.com",
+      "url": "https://graybird-company.vercel.app/"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Local development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Register": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "password": { "type": "string" },
+          "role": {
+            "type": "string",
+            "enum": ["admin", "operator"],
+            "description": "Role of the user, either admin or operator"
+          }
+        },
+        "required": ["username", "password"]
+      },
+      "Login": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" }
+        },
+        "required": ["username", "password"]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "password": { "type": "string" },
+          "role": { "type": "string", "enum": ["admin", "operator"] }
+        }
+      },
+      "Barang": {
+        "type": "object",
+        "properties": {
+          "nama": { "type": "string" },
+          "kode": { "type": "string" },
+          "stok": { "type": "integer" },
+          "lokasi_rak": { "type": "string" }
+        }
+      },
+      "Transaksi": {
+        "type": "object",
+        "properties": {
+          "id_barang": { "type": "integer" },
+          "tanggal": { "type": "string", "format": "date" },
+          "tipe_transaksi": { "type": "string", "enum": ["masuk", "keluar"] },
+          "jumlah": { "type": "integer" }
+        }
+      }
+    }
+  },
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register akun baru",
+        "description": "Mendaftarkan user baru ke dalam sistem",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Ferry Amaludin"
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "ferry"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "ferry123"
+                  },
+                  "role": {
+                    "type": "string",
+                    "example": "admin",
+                    "enum": ["admin", "operator"]
+                  }
+                },
+                "required": ["name", "username", "password", "role"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Register berhasil",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Register berhasil",
+                  "user": {
+                    "id": "uuid-otomatis",
+                    "name": "Ferry Amaludin",
+                    "username": "ferry",
+                    "role": "admin"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Username sudah digunakan atau role tidak valid"
+          },
+          "500": {
+            "description": "Kesalahan server"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["username", "password"],
+                "example": {
+                  "username": "ferry",
+                  "password": "ferry123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Successful login" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": ["Operators"],
+        "summary": "Get all operators",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "List of users" }
+        }
+      },
+      "post": {
+        "tags": ["Operators"],
+        "summary": "Create operator",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "username": { "type": "string" },
+                  "password": { "type": "string" },
+                  "role": {
+                    "type": "string",
+                    "enum": ["admin", "operator"],
+                    "description": "Role of the user, either admin or operator"
+                  }
+                },
+                "required": ["name","username", "password", "role"],
+                "example": {
+                  "name": "Ferry Amaludin",
+                  "username": "ferry",
+                  "password": "ferry123",
+                  "role": "operator"
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/users/{id}": {
+      "put": {
+        "tags": ["Operators"],
+        "summary": "Update operator",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid","example": "7437e1d6-3bee-49f0-874e-55db15f4bed3" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/User" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Updated" } }
+      },
+      "delete": {
+        "tags": ["Operators"],
+        "summary": "Delete operator",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid","example": "7437e1d6-3bee-49f0-874e-55db15f4bed3" } }
+        ],
+        "responses": { "200": { "description": "Deleted" } }
+      }
+    },
+    "/barang": {
+      "get": {
+        "tags": ["Barang"],
+        "summary": "List barang",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Success" } }
+      },
+      "post": {
+        "tags": ["Barang"],
+        "summary": "Create barang",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Barang" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/barang/{id}": {
+      "put": {
+        "tags": ["Barang"],
+        "summary": "Update barang",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": {  "type": "string", "format": "uuid","example": "7437e1d6-3bee-49f0-874e-55db15f4bed3" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Barang" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Updated" } }
+      },
+      "delete": {
+        "tags": ["Barang"],
+        "summary": "Delete barang",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": {  "type": "string", "format": "uuid","example": "7437e1d6-3bee-49f0-874e-55db15f4bed3" } }
+        ],
+        "responses": { "200": { "description": "Deleted" } }
+      }
+    },
+    "/barang/low-stock": {
+      "get": {
+        "tags": ["Barang"],
+        "summary": "Barang stok di bawah 10",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/transaksi": {
+      "get": {
+        "tags": ["Transaksi"],
+        "summary": "List transaksi",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Success" } }
+      },
+      "post": {
+        "tags": ["Transaksi"],
+        "summary": "Buat transaksi masuk/keluar",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Transaksi" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    }
+  }
+}

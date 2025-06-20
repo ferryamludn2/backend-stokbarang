@@ -1,0 +1,39 @@
+{
+  "name": "backend-stokbarang",
+  "version": "1.0.0",
+  "description": "Backend untuk aplikasi dashboard stok barang",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ferryamludn2/backend-stokbarang.git"
+  },
+  "keywords": [
+    "inventory",
+    "express",
+    "postgres",
+    "supabase",
+    "api"
+  ],
+  "author": "Ferry Amaludin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ferryamludn2/backend-stokbarang/issues"
+  },
+  "homepage": "https://github.com/ferryamludn2/backend-stokbarang#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.2",
+    "swagger-ui-express": "^4.6.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
