@@ -10,6 +10,7 @@ Aplikasi ini merupakan sistem manajemen stok barang sederhana yang dibuat oleh *
 * **Auth**: JSON Web Token (JWT)
 * **Testing Race Condition**: Grafana k6
 * **Deployment**: Vercel
+* **Database** : Railway
 
 ---
 
