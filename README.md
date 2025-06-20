@@ -15,6 +15,27 @@ Aplikasi ini merupakan sistem manajemen stok barang sederhana yang dibuat oleh *
 ---
 
 ## 3. Struktur Database
+Sesuai BE
+barang {
+	nama,
+	kode,
+	stok,
+	lokasi_rak
+}
+
+transaksi {
+	id_barang,
+	tanggal,
+	tipe_transaksi (barang masuk atau barang keluar),
+	id_user,
+}
+
+user {
+	name,
+	username,
+	password,
+	role,
+}
 
 ### Tabel: `barang`
 
@@ -99,9 +120,10 @@ Aplikasi ini merupakan sistem manajemen stok barang sederhana yang dibuat oleh *
 
 ### 8. Deployment
 
-* Backend dapat dideploy ke layanan seperti:
+* Backend dideploy ke layanan :
 
   * **Vercel**
+  * **Railway**
 * Menggunakan file `.env` untuk menyimpan variabel rahasia seperti koneksi database dan secret JWT.
 
 ---
